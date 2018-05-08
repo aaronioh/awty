@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Alarm Started", Toast.LENGTH_SHORT).show()
                     intent.putExtra("message", message.text.toString())
                     intent.putExtra("phoneNum", phoneNum.text.toString())
-                    val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+                    val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                     val interval = nag.text.toString().toLong() * 1000 * 60
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent)
                 } else {
