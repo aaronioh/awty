@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -23,10 +24,12 @@ class MainActivity : AppCompatActivity() {
         val nag = findViewById<EditText>(R.id.editNag) as EditText
         val button = findViewById<Button>(R.id.buttonToggle) as Button
 
-        button.setOnClickListener {
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(this, AlarmReceiver::class.java)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
 
+        Log.i("MainActivity", intent.toString())
+
+        button.setOnClickListener {
             if (button.text == "Start") {
                 if (message.text.isNotEmpty() && phoneNum.length() == 10 &&
                         nag.text.isNotEmpty() &&
@@ -38,6 +41,8 @@ class MainActivity : AppCompatActivity() {
                     val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                     val interval = nag.text.toString().toLong() * 1000 * 60
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent)
+                    Log.i("MainActivity", "setRepeating successful")
+
                 } else {
                     if (message.text.isEmpty()) {
                         Toast.makeText(this, "Message is empty", Toast.LENGTH_SHORT).show()
@@ -56,17 +61,6 @@ class MainActivity : AppCompatActivity() {
                 val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
                 alarmManager.cancel(pendingIntent)
             }
-        }
-    }
-
-    class AlarmReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Log.i("Receiver", "Started alarm receiver")
-            val message = intent!!.getStringExtra("message")
-            val phoneNum = intent!!.getStringExtra("phoneNum")
-            val formattedNum = "(" + phoneNum.substring(0, 3) + ")" + phoneNum.substring(3, 6) + "-" + phoneNum.substring(6)
-            Toast.makeText(context, formattedNum + ":" + message, Toast.LENGTH_SHORT).show()
-            Log.i("Receiver", "Toast made")
         }
     }
 }
