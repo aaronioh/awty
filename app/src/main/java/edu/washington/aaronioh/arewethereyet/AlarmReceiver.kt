@@ -3,6 +3,7 @@ package edu.washington.aaronioh.arewethereyet
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.telephony.SmsManager
 import android.util.Log
 import android.widget.Toast
 
@@ -12,7 +13,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val message = intent!!.getStringExtra("message")
         val phoneNum = intent!!.getStringExtra("phoneNum")
         val formattedNum = "(" + phoneNum.substring(0, 3) + ")" + phoneNum.substring(3, 6) + "-" + phoneNum.substring(6)
-        Toast.makeText(context, formattedNum + ": " + message, Toast.LENGTH_SHORT).show()
+        SmsManager.getDefault().sendTextMessage(phoneNum, null, message, null, null)
         Log.i("Receiver", "Toast made")
     }
 }
